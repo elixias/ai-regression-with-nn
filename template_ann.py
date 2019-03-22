@@ -56,7 +56,7 @@ parameters = {'batch_size': [10,25],
 			  }
 grid_search = GridSearchCV(estimator = cvclassifier,
                            param_grid = parameters,
-						   scoring='neg_mean_squared_error'
+						   scoring='neg_mean_squared_error',
                            cv = 5)
 grid_search = grid_search.fit(X_train, y_train)
 best_parameters = grid_search.best_params_
@@ -72,7 +72,11 @@ newclassifier.add(Dense(units = 10, kernel_initializer = 'uniform'))
 newclassifier.add(Dropout(rate = 0.2))
 newclassifier.add(Dense(units = 1))
 newclassifier.compile(optimizer = best_parameters["optimizer"], loss = best_parameters["loss"])
-newclassifier.fit(X_train,y_train,batch_size=best_parameters["batch_size"],epochs=best_parameters["epochs"])
+history = newclassifier.fit(X_train,y_train,batch_size=best_parameters["batch_size"],epochs=best_parameters["epochs"])
+
+import matplotlib.pyplot as plt
+plt.plot(history.history['loss'])
+plt.show()
 
 predicted = newclassifier.predict(X_test)
 print(predicted)
